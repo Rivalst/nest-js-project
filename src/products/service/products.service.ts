@@ -15,9 +15,37 @@ export class ProductsService {
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
   ) {}
 
-  // TODO: Create pagination
-  async getAll(): Promise<Product[]> {
-    return this.productModel.find().exec();
+  async getTotalCount(): Promise<number> {
+    return this.productModel.countDocuments().exec();
+  }
+
+  async getProducts(page: number, limit: number): Promise<any> {
+    const skip = (page - 1) * limit;
+    return this.productModel.find().skip(skip).limit(limit).exec();
+  }
+
+  async getProductsWithPagination(page: number, limit: number) {
+    const totalCount = await this.getTotalCount();
+    const totalPages = Math.ceil(totalCount / limit);
+
+    // TODO: Should i throw an error here or just return an empty array?
+    if (page > totalPages) {
+      throw new BadRequestException(
+        `Page ${page} exceeds total pages available (${totalPages}).`,
+      );
+    }
+
+    const items = await this.getProducts(page, limit);
+
+    return {
+      items,
+      pagination: {
+        totalItems: totalCount,
+        pageItems: items.length,
+        currentPage: page,
+        perPage: totalPages,
+      },
+    };
   }
 
   async getByID(id: string): Promise<Product> {

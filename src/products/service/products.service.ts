@@ -29,11 +29,11 @@ export class ProductsService {
     const totalPages = Math.ceil(totalCount / limit);
 
     // TODO: Should i throw an error here or just return an empty array?
-    if (page > totalPages) {
-      throw new BadRequestException(
-        `Page ${page} exceeds total pages available (${totalPages}).`,
-      );
-    }
+    // if (page > totalPages) {
+    //   throw new BadRequestException(
+    //     `Page ${page} exceeds total pages available (${totalPages}).`,
+    //   );
+    // }
 
     const items = await this.getProducts(page, limit);
 

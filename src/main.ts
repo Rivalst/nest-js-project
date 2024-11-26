@@ -4,15 +4,20 @@ import {
   ValidationError,
   ValidationPipe,
 } from '@nestjs/common';
-import { AppModule } from './feature/app/app.module';
+import { AppModule } from './app/app.module';
+import { AppLogger } from './logger/logger.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
+  app.useLogger(new AppLogger());
+  app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
-      // TODO: not sure for use this
+      // Need uncommented when using class-validatot @Transform
       // transform: true,
       exceptionFactory: (errors: ValidationError[]) => {
         const errorMessages = errors.map((error) => {

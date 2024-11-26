@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
-  HttpStatus,
   Param,
   Post,
   Put,
@@ -14,7 +12,7 @@ import {
 import { CreateProductsDto } from '../dto/create-products.dto';
 import { ProductsService } from '../service/products.service';
 import { UpdateProductDto } from '../dto/update-product.dto';
-import { ParseOptionalIntPipe } from '../../../util/pipe/parce-int.pipe';
+import { ParseOptionalIntPipe } from '../../util/pipe/parce-int.pipe';
 
 @Controller('products')
 export class ProductsController {
@@ -54,13 +52,11 @@ export class ProductsController {
   }
 
   @Post()
-  @HttpCode(HttpStatus.CREATED)
   async createProduct(@Body() createProductsDto: CreateProductsDto) {
     return this.productsService.create(createProductsDto);
   }
 
   @Put(':id')
-  @HttpCode(HttpStatus.CREATED)
   async updateProduct(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,

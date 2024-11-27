@@ -12,11 +12,17 @@ import {
 import { CreateProductsDto } from '../dto/create-products.dto';
 import { ProductsService } from '../service/products.service';
 import { UpdateProductDto } from '../dto/update-product.dto';
-import { ParseOptionalIntPipe } from '../../util/pipe/parce-int.pipe';
+import { ParseOptionalIntPipe } from '../../common/pipe/parce-int.pipe';
+import { AppLogger } from '../../logger/logger.service';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly logger: AppLogger,
+  ) {
+    this.logger.setContext('ProductsController');
+  }
 
   // Usage example for a query dto
   // @Get()

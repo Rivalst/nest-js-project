@@ -1,19 +1,19 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product, ProductDocument } from '../schemas/product.schema';
 import { CreateProductsDto } from '../dto/create-products.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
+import { AppLogger } from '../../logger/logger.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
-  ) {}
+    private readonly logger: AppLogger,
+  ) {
+    this.logger.setContext('ProductsService');
+  }
 
   async getTotalCount(): Promise<number> {
     return this.productModel.countDocuments().exec();
@@ -59,15 +59,8 @@ export class ProductsService {
   }
 
   async create(product: CreateProductsDto): Promise<Product> {
-    try {
-      const newProduct = new this.productModel(product);
-      return newProduct.save();
-    } catch (error) {
-      console.log(error);
-      throw new BadRequestException(
-        'Failed to create product. Please check the input data.',
-      );
-    }
+    const newProduct = new this.productModel(product);
+    return newProduct.save();
   }
 
   async update(id: string, product: UpdateProductDto): Promise<Product> {

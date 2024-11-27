@@ -7,9 +7,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { AppLogger } from '../logger/logger.service';
 
 @Catch()
-export class AllExceptionsFilter implements ExceptionFilter {
+export class GlobalExceptionsFilter implements ExceptionFilter {
+  constructor(private readonly logger: AppLogger) {
+    this.logger.setContext('GlobalExceptionsFilter');
+  }
+
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -19,6 +24,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
+    this.logger.error(exception);
     if (exception instanceof Error && exception.name === 'CastError') {
       response.status(HttpStatus.NOT_FOUND).json({
         statusCode: HttpStatus.NOT_FOUND,
@@ -48,8 +54,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
     };
-
-    console.error(exception);
 
     response.status(status).json(errorResponse);
   }

@@ -14,6 +14,8 @@ import { ProductsService } from '../service/products.service';
 import { UpdateProductDto } from '../dto/update-product.dto';
 import { AppLogger } from '../../logger/logger.service';
 import { ProductsQueryDto } from '../dto/query-products.dto';
+import { ApiBadRequestResponse, ApiCreatedResponse } from '@nestjs/swagger';
+import { ApiPaginatedResponse } from '../../common/decorators/api-pagination-ok-response.decorator';
 
 @Controller('products')
 export class ProductsController {
@@ -25,6 +27,8 @@ export class ProductsController {
   }
 
   @Get()
+  // example own decorator for swagger
+  @ApiPaginatedResponse()
   async getProducts(
     // @Query('page', ParseOptionalIntPipe) page: number = 1,
     // @Query('limit', ParseOptionalIntPipe) limit: number = 10,
@@ -39,6 +43,12 @@ export class ProductsController {
     return this.productsService.getByID(id);
   }
 
+  // example swagger body
+  @ApiCreatedResponse({ type: CreateProductsDto })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+    schema: { example: { message: 'message', path: 'api/products' } },
+  })
   @Post()
   async createProduct(@Body() createProductsDto: CreateProductsDto) {
     return this.productsService.create(createProductsDto);

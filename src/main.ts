@@ -6,11 +6,29 @@ import {
 } from '@nestjs/common';
 import { AppModule } from './app/app.module';
 import { AppLogger } from './logger/logger.service';
+import {
+  DocumentBuilder,
+  SwaggerDocumentOptions,
+  SwaggerModule,
+} from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
+  const config = new DocumentBuilder()
+    .setTitle('NestJS project')
+    .setDescription('The API description')
+    .setVersion('1.0')
+    .build();
+  const options: SwaggerDocumentOptions = {
+    operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
+  };
+  const documentFactory = () =>
+    SwaggerModule.createDocument(app, config, options);
+
+  SwaggerModule.setup('api', app, documentFactory);
+
   app.useLogger(new AppLogger());
   app.setGlobalPrefix('api');
   app.useGlobalPipes(

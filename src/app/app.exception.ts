@@ -27,9 +27,7 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
     this.logger.error(exception);
     if (exception instanceof Error && exception.name === 'CastError') {
       response.status(HttpStatus.NOT_FOUND).json({
-        statusCode: HttpStatus.NOT_FOUND,
         message: 'Object not found',
-        timestamp: new Date().toISOString(),
         path: request.url,
       });
       return;
@@ -39,19 +37,16 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
       response.status(HttpStatus.NOT_FOUND).json({
         statusCode: HttpStatus.NOT_FOUND,
         message: exception.message,
-        timestamp: new Date().toISOString(),
         path: request.url,
       });
       return;
     }
 
     const errorResponse = {
-      statusCode: status,
       message:
         exception instanceof HttpException
           ? exception.message
           : 'Internal server error',
-      timestamp: new Date().toISOString(),
       path: request.url,
     };
 

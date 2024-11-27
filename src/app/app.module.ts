@@ -15,12 +15,14 @@ import {
   LoggerRequestMethodMiddleware,
 } from '../common/middleware/middleware.middleware';
 import { LoggerModule } from '../logger/logger.module';
+import { ExcludeNullInterceptor } from '../common/iterceptor/null-iterceptor.interceptor';
 
 @Module({
   imports: [ProductsModule, DatabaseModule, LoggerModule],
   controllers: [AppController],
   providers: [
     AppService,
+    ExcludeNullInterceptor,
     {
       provide: APP_FILTER,
       useClass: GlobalExceptionsFilter,

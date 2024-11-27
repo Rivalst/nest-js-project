@@ -12,8 +12,8 @@ import {
 import { CreateProductsDto } from '../dto/create-products.dto';
 import { ProductsService } from '../service/products.service';
 import { UpdateProductDto } from '../dto/update-product.dto';
-import { ParseOptionalIntPipe } from '../../common/pipe/parce-int.pipe';
 import { AppLogger } from '../../logger/logger.service';
+import { ProductsQueryDto } from '../dto/query-products.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -24,31 +24,13 @@ export class ProductsController {
     this.logger.setContext('ProductsController');
   }
 
-  // Usage example for a query dto
-  // @Get()
-  // async getProducts(@Query() query: ProductsQueryDto) {
-  //   const { page, limit } = query;
-  //
-  //   const items = await this.productsService.getProducts(page, limit);
-  //   const totalCount = await this.productsService.getTotalCount();
-  //   const totalPages = Math.ceil(totalCount / limit);
-  //
-  //   return {
-  //     items,
-  //     pagination: {
-  //       totalItems: totalCount,
-  //       totalPages,
-  //       currentPage: page,
-  //       perPage: limit,
-  //     },
-  //   };
-  // }
-
   @Get()
   async getProducts(
-    @Query('page', ParseOptionalIntPipe) page: number = 1,
-    @Query('limit', ParseOptionalIntPipe) limit: number = 10,
+    // @Query('page', ParseOptionalIntPipe) page: number = 1,
+    // @Query('limit', ParseOptionalIntPipe) limit: number = 10,
+    @Query() query: ProductsQueryDto,
   ) {
+    const { page, limit } = query;
     return this.productsService.getProductsWithPagination(page, limit);
   }
 

@@ -26,16 +26,13 @@ export class ProductsService {
 
   async getProductsWithPagination(page: number, limit: number) {
     const totalCount = await this.getTotalCount();
-    const totalPages = Math.ceil(totalCount / limit);
+    const totalPages = Math.ceil(totalCount / (limit ?? totalCount));
 
-    // TODO: Should i throw an error here or just return an empty array?
-    // if (page > totalPages) {
-    //   throw new BadRequestException(
-    //     `Page ${page} exceeds total pages available (${totalPages}).`,
-    //   );
-    // }
+    let items = [];
 
-    const items = await this.getProducts(page, limit);
+    if (page <= totalPages || page === undefined) {
+      items = await this.getProducts(page, limit);
+    }
 
     return {
       items,

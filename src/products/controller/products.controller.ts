@@ -14,10 +14,13 @@ import { ProductsService } from '../service/products.service';
 import { UpdateProductDto } from '../dto/update-product.dto';
 import { AppLogger } from '../../logger/logger.service';
 import { ProductsQueryDto } from '../dto/query-products.dto';
-import { ApiBadRequestResponse, ApiCreatedResponse } from '@nestjs/swagger';
-import { ApiPaginatedResponse } from '../../common/decorators/api-pagination-ok-response.decorator';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiPaginatedResponse } from '../../common/decorators/api-ok-pagination-response-products.decorator';
+import { ApiBadBaseRequestResponse } from '../../common/decorators/api-bad-base-request-response.decorator';
+import { Product } from '../schemas/product.schema';
 
 @Controller('products')
+@ApiBadBaseRequestResponse()
 export class ProductsController {
   constructor(
     private readonly productsService: ProductsService,
@@ -28,6 +31,7 @@ export class ProductsController {
 
   @Get()
   // example own decorator for swagger
+  @ApiOkResponse({ type: Product })
   @ApiPaginatedResponse()
   async getProducts(
     // @Query('page', ParseOptionalIntPipe) page: number = 1,
@@ -39,22 +43,20 @@ export class ProductsController {
   }
 
   @Get(':id')
+  @ApiOkResponse({ type: Product })
   getByID(@Param('id') id: string) {
     return this.productsService.getByID(id);
   }
 
   // example swagger body
-  @ApiCreatedResponse({ type: CreateProductsDto })
-  @ApiBadRequestResponse({
-    description: 'Bad request',
-    schema: { example: { message: 'message', path: 'api/products' } },
-  })
+  @ApiCreatedResponse({ type: Product })
   @Post()
   async createProduct(@Body() createProductsDto: CreateProductsDto) {
     return this.productsService.create(createProductsDto);
   }
 
   @Put(':id')
+  @ApiOkResponse({ type: Product })
   async updateProduct(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -63,6 +65,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @ApiOkResponse({ type: Product })
   async removeProduct(@Param('id') id: string) {
     return this.productsService.remove(id);
   }

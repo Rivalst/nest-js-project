@@ -6,7 +6,7 @@ export const ApiPaginatedResponse = () => {
     ApiOkResponse({
       schema: {
         example: {
-          items: [{ title: 'title', price: 99 }],
+          items: [{ title: 'title', price: 99, id: 'id' }],
           pagination: {
             totalItems: 1,
             pageItems: 1,

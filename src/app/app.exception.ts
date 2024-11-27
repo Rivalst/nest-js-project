@@ -6,7 +6,7 @@ import {
   HttpStatus,
   NotFoundException,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { AppLogger } from '../logger/logger.service';
 
 @Catch()
@@ -18,26 +18,32 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
+    const error =
+      exception instanceof HttpException
+        ? exception.getResponse()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
     this.logger.error(exception);
     if (exception instanceof Error && exception.name === 'CastError') {
       response.status(HttpStatus.NOT_FOUND).json({
         message: 'Object not found',
-        path: request.url,
+        error: {
+          message: exception.message,
+          error: 'Not Found',
+          statusCode: 404,
+        },
       });
       return;
     }
 
     if (exception instanceof NotFoundException) {
       response.status(HttpStatus.NOT_FOUND).json({
-        statusCode: HttpStatus.NOT_FOUND,
-        message: exception.message,
-        path: request.url,
+        message: 'Object not found',
+        error: exception.getResponse(),
       });
       return;
     }
@@ -47,7 +53,7 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
         exception instanceof HttpException
           ? exception.message
           : 'Internal server error',
-      path: request.url,
+      error: error,
     };
 
     response.status(status).json(errorResponse);

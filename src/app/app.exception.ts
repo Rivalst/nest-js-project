@@ -42,7 +42,7 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
 
     if (exception instanceof NotFoundException) {
       response.status(HttpStatus.NOT_FOUND).json({
-        message: 'Object not found',
+        message: 'Not found',
         error: exception.getResponse(),
       });
       return;

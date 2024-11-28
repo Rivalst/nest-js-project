@@ -16,9 +16,10 @@ import {
 } from '../common/middleware/middleware.middleware';
 import { LoggerModule } from '../logger/logger.module';
 import { ExcludeNullInterceptor } from '../common/iterceptor/null-iterceptor.interceptor';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [ProductsModule, DatabaseModule, LoggerModule],
+  imports: [ProductsModule, DatabaseModule, LoggerModule, AuthModule],
   controllers: [AppController],
   providers: [
     AppService,

@@ -1,13 +1,13 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNumberOptionalPram } from '../decorators/is-number-pram.decorator';
+import { IsStringOptionalPram } from '../decorators/is-string-pram.decorator';
 
 export class UpdateProductDto {
-  @IsOptional()
+  @IsStringOptionalPram('title')
   @ApiProperty({ type: String, description: 'product' })
-  @IsString({ message: "'title' must be a string" })
   readonly title: string;
-  @IsOptional()
+
+  @IsNumberOptionalPram('price')
   @ApiProperty({ type: Number })
-  @IsNumber({}, { message: "'price' must be a number" })
   readonly price: number;
 }

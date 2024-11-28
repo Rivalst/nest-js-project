@@ -1,13 +1,12 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsStringPram } from '../decorators/is-string-pram.decorator';
+import { IsNumberPram } from '../decorators/is-number-pram.decorator';
 
 export class CreateProductsDto {
-  @IsString({ message: "'title' must be a string" })
-  @IsNotEmpty({ message: "title' is required" })
+  @IsStringPram('title')
   @ApiProperty({ type: String, description: 'product' })
   readonly title: string;
   @ApiProperty({ type: Number })
-  @IsNumber({}, { message: "'price' must be a number" })
-  @IsNotEmpty({ message: "'price' is required" })
+  @IsNumberPram('price')
   readonly price: number;
 }

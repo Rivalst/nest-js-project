@@ -10,6 +10,7 @@ import { SALT_ROUNDS_BASE } from '../common/constant/constant';
 import { AuthUserRegisteredDto } from './auth-user-registered.dto';
 import { AuthUserRegisterDto } from './auth-user-register.dto';
 import { AuthUserDto } from './auth-user.dto';
+import { AuthUserSignInDto } from './auth-user-signin.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,15 +19,15 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(
-    username: string,
-    pass: string,
-  ): Promise<{ access_token: string }> {
-    const user = await this.usersService.findOneByUserName(username);
+  async signIn(userDto: AuthUserSignInDto): Promise<{ access_token: string }> {
+    const user = await this.usersService.findOneByUserName(userDto.username);
     if (!user) {
       throw new UnauthorizedException('Username or password is invalid');
     }
-    const isPasswordValid = await bcrypt.compare(pass, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      userDto.password,
+      user.password,
+    );
     if (!isPasswordValid) {
       throw new UnauthorizedException('Username or password is invalid');
     }

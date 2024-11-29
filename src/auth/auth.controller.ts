@@ -5,14 +5,15 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Param,
   Post,
+  Query,
   Request,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from '../common/constant/constant';
 import { AuthUserRegisteredDto } from './auth-user-registered.dto';
 import { AuthUserRegisterDto } from './auth-user-register.dto';
+import { AuthUserSignInDto } from './auth-user-signin.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -21,8 +22,8 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() signInDto: Record<string, any>) {
-    return this.authService.signIn(signInDto.username, signInDto.password);
+  signIn(@Body() signInDto: AuthUserSignInDto) {
+    return this.authService.signIn(signInDto);
   }
 
   @Get('profile')
@@ -31,8 +32,8 @@ export class AuthController {
   }
 
   @Public()
-  @Get('users/:name')
-  getAllUsers(@Param('name') name: string) {
+  @Get('users')
+  getAllUsers(@Query('name') name: string = '') {
     return this.authService.findUsersByName(name);
   }
 

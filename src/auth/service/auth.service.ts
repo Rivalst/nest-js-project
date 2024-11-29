@@ -3,14 +3,14 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { UsersService } from '../../users/service/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { SALT_ROUNDS_BASE } from '../common/constant/constant';
-import { AuthUserRegisteredDto } from './auth-user-registered.dto';
-import { AuthUserRegisterDto } from './auth-user-register.dto';
-import { AuthUserDto } from './auth-user.dto';
-import { AuthUserSignInDto } from './auth-user-signin.dto';
+import { SALT_ROUNDS_BASE } from '../../common/constant/constant';
+import { AuthUserRegisteredDto } from '../dto/auth-user-registered.dto';
+import { AuthUserRegisterDto } from '../dto/auth-user-register.dto';
+import { AuthUserDto } from '../dto/auth-user.dto';
+import { AuthUserSignInDto } from '../dto/auth-user-signin.dto';
 
 @Injectable()
 export class AuthService {

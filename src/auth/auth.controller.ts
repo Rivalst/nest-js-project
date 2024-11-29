@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Request,
 } from '@nestjs/common';
@@ -27,6 +28,12 @@ export class AuthController {
   @Get('profile')
   getProfile(@Request() req) {
     return this.authService.getProfile(req.user.userId);
+  }
+
+  @Public()
+  @Get('users/:name')
+  getAllUsers(@Param('name') name: string) {
+    return this.authService.findUsersByName(name);
   }
 
   @Public()

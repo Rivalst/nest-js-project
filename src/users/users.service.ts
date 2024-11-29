@@ -34,4 +34,12 @@ export class UsersService {
       .findOneAndDelete({ username: user.username })
       .exec();
   }
+
+  async findUsersByName(name: string): Promise<UserDto[]> {
+    return await this.userModel
+      .find({
+        username: { $regex: name, $options: 'i' },
+      })
+      .exec();
+  }
 }

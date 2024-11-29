@@ -57,6 +57,10 @@ export class AuthService {
     return await this.usersService.findOneById(userId);
   }
 
+  async findUsersByName(name: string): Promise<AuthUserDto[]> {
+    return await this.usersService.findUsersByName(name);
+  }
+
   private async findUser(username: string): Promise<AuthUserDto> {
     return await this.usersService.findOneByUserName(username);
   }

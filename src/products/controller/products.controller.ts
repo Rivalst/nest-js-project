@@ -18,6 +18,7 @@ import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { ApiPaginatedResponse } from '../../common/decorators/api-ok-pagination-response-products.decorator';
 import { ApiBadBaseRequestResponse } from '../../common/decorators/api-bad-base-request-response.decorator';
 import { Product } from '../schemas/product.schema';
+import { Public } from '../../common/constant/constant';
 
 @Controller('products')
 @ApiBadBaseRequestResponse()
@@ -29,6 +30,7 @@ export class ProductsController {
     this.logger.setContext('ProductsController');
   }
 
+  @Public()
   @Get()
   // example own decorator for swagger
   @ApiOkResponse({ type: Product })
@@ -42,6 +44,7 @@ export class ProductsController {
     return this.productsService.getProductsWithPagination(page, limit);
   }
 
+  @Public()
   @Get(':id')
   @ApiOkResponse({ type: Product })
   getByID(@Param('id') id: string) {

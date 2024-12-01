@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 
 import { CreateProductsDto } from '../dto/create-products.dto';
 import { ProductsService } from '../service/products.service';
@@ -18,7 +9,7 @@ import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { ApiPaginatedResponse } from '../../common/decorators/api-ok-pagination-response-products.decorator';
 import { ApiBadBaseRequestResponse } from '../../common/decorators/api-bad-base-request-response.decorator';
 import { Product } from '../schemas/product.schema';
-import { Public } from '../../common/constant/constant';
+import { Public } from '../../common/constant';
 
 @Controller('products')
 @ApiBadBaseRequestResponse()
@@ -60,10 +51,7 @@ export class ProductsController {
 
   @Put(':id')
   @ApiOkResponse({ type: Product })
-  async updateProduct(
-    @Param('id') id: string,
-    @Body() updateProductDto: UpdateProductDto,
-  ) {
+  async updateProduct(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productsService.update(id, updateProductDto);
   }
 

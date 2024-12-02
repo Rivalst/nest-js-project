@@ -1,22 +1,22 @@
 import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { SALT_ROUNDS_BASE } from '../common/constant';
 import { AuthUserRegisteredDto } from './dto/auth-user-registered.dto';
 import { AuthUserRegisterDto } from './dto/auth-user-register.dto';
-import { AuthUserDto } from './dto/auth-user.dto';
 import { AuthUserSignInDto } from './dto/auth-user-signin.dto';
+import { UserRepository } from '../user/user.repository';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    private userRepository: UserRepository,
     private jwtService: JwtService,
   ) {}
 
-  async signIn(userDto: AuthUserSignInDto): Promise<{ access_token: string }> {
-    const user = await this.usersService.findOneByUserName(userDto.username);
+  // TODO: Not sure that { user: User; access_token: string } is correct and should i create a dto for all return types?
+  async signIn(userDto: AuthUserSignInDto): Promise<{ user: User; access_token: string }> {
+    const user = await this.userRepository.findOne(userDto.email);
     if (!user) {
       throw new UnauthorizedException('Username or password is invalid');
     }
@@ -25,37 +25,29 @@ export class AuthService {
       throw new UnauthorizedException('Username or password is invalid');
     }
     const payload = {
-      userId: user._id.toString(),
+      userId: user.id.toString(),
       username: user.username,
     };
+    // TODO: Is this better method for remove a password field?
+    const userWithoutPassword = user.get({ plain: true });
+    delete userWithoutPassword.password;
     return {
+      user: userWithoutPassword,
       access_token: await this.jwtService.signAsync(payload),
     };
   }
 
   async signUp(user: AuthUserRegisterDto): Promise<AuthUserRegisteredDto> {
-    const existingUser = await this.findUser(user.username);
+    const existingUser = await this.userRepository.findOne(user.username);
     if (existingUser) {
       throw new ConflictException('User with this username already exists');
     }
-
-    user.password = await bcrypt.hash(user.password, SALT_ROUNDS_BASE);
-    return this.usersService.createUser(user);
-  }
-
-  async delete(user: AuthUserDto): Promise<AuthUserDto> {
-    return this.usersService.deleteUser(user);
-  }
-
-  async getProfile(userId: string): Promise<AuthUserDto> {
-    return await this.usersService.findOneById(userId);
-  }
-
-  async findUsersByName(name: string): Promise<AuthUserDto[]> {
-    return await this.usersService.findUsersByName(name);
-  }
-
-  private async findUser(username: string): Promise<AuthUserDto> {
-    return await this.usersService.findOneByUserName(username);
+    const saltRounds = parseInt(process.env.SALT_ROUNDS_BASE, 10);
+    user.password = await bcrypt.hash(user.password, saltRounds);
+    const createdUser = await this.userRepository.create(user);
+    // TODO: Is this a better method for remove a password field?
+    const userWithoutPassword = createdUser.get({ plain: true });
+    delete userWithoutPassword.password;
+    return userWithoutPassword;
   }
 }

@@ -21,4 +21,17 @@ export class AuthController {
   signUp(@Body() authUserDto: AuthUserRegisterDto): Promise<AuthUserRegisteredDto> {
     return this.authService.signUp(authUserDto);
   }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('admin-login')
+  signInAdmin(@Body() signInDto: AuthUserSignInDto) {
+    return this.authService.signIn(signInDto);
+  }
+
+  @Public()
+  @Post('admin-register')
+  signUpAdmin(@Body() authUserDto: AuthUserRegisterDto): Promise<AuthUserRegisteredDto> {
+    return this.authService.signUp(authUserDto);
+  }
 }

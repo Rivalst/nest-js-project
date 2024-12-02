@@ -1,7 +1,7 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { Gender } from '../../common/constant/enums.enum';
 
-export class AuthUserRegisterDto {
+export class UserDto {
   @MinLength(3)
   @IsString({ message: 'username must be a string' })
   @IsNotEmpty({ message: 'username is required' })

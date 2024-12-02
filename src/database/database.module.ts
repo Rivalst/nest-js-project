@@ -1,11 +1,8 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { databaseProviders } from './database.poviders';
 
 @Module({
-  imports: [
-    MongooseModule.forRoot(
-      'mongodb+srv://hidalgob:3E9FwwchjZKMK3s8@nestjs-project-cluster.poaj4.mongodb.net/?retryWrites=true&w=majority&appName=nestjs-project-cluster',
-    ),
-  ],
+  providers: [...databaseProviders],
+  exports: [...databaseProviders],
 })
 export class DatabaseModule {}

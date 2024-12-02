@@ -7,6 +7,7 @@ import { jwtConstants } from '../common/constant';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
 import { UserRepository } from '../user/user.repository';
+import { UserAdminRepository } from '../user/user-admin.repository';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UserRepository } from '../user/user.repository';
   providers: [
     AuthService,
     UserRepository,
+    UserAdminRepository,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,

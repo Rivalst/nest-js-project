@@ -3,10 +3,10 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { AuthUserRegisteredDto } from './dto/auth-user-registered.dto';
 import { AuthUserRegisterDto } from './dto/auth-user-register.dto';
-import { AuthUserSignInDto } from './dto/auth-user-signin.dto';
-import { UserRepository } from '../user/user.repository';
+import { AuthEmailUserSignInDto } from './dto/auth-email-user-sign-in.dto';
+import { UserRepository } from '../user/repository/user.repository';
 import { User } from '../user/user.entity';
-import { UserAdminRepository } from '../user/user-admin.repository';
+import { UserAdminRepository } from '../user/repository/user-admin.repository';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +17,7 @@ export class AuthService {
   ) {}
 
   // TODO: Not sure that { user: User; access_token: string } is correct and should i create a dto for all return types?
-  async signIn(userDto: AuthUserSignInDto): Promise<{ user: User; access_token: string }> {
+  async signIn(userDto: AuthEmailUserSignInDto): Promise<{ user: User; access_token: string }> {
     const user = await this.userRepository.findOne(userDto.email);
     if (!user) {
       throw new UnauthorizedException('Username or password is invalid');
@@ -55,7 +55,7 @@ export class AuthService {
 
   // BELLOW A MOCK DATA FOR ADMIN EQUAL TO ABOVE
   // TODO: Not sure that { user: User; access_token: string } is correct and should i create a dto for all return types?
-  async signInAdmin(userDto: AuthUserSignInDto): Promise<{ user: User; access_token: string }> {
+  async signInAdmin(userDto: AuthEmailUserSignInDto): Promise<{ user: User; access_token: string }> {
     const user = await this.userAdminRepository.findOne(userDto.email);
     if (!user) {
       throw new UnauthorizedException('Username or password is invalid');

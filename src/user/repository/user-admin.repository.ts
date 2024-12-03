@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common';
-import { USER_REPOSITORY } from '../common/constant';
-import { User } from './user.entity';
+import { USER_REPOSITORY } from '../../common/constant';
+import { User } from '../user.entity';
 import { Op } from 'sequelize';
-import { UserDto } from './dto/user.dto';
-import { UserUpdateDto } from './dto/user-update.dto';
+import { UserDto } from '../dto/user.dto';
+import { UserUpdateDto } from '../dto/user-update.dto';
 
 export class UserAdminRepository {
   constructor(@Inject(USER_REPOSITORY) private readonly userRepository: typeof User) {}

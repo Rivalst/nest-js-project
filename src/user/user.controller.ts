@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Post, Request } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query, Request } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserUpdateDto } from './dto/user-update.dto';
+import { Public } from '../common/constant';
 
 @Controller('user')
 export class UserController {
@@ -9,6 +10,12 @@ export class UserController {
   @Get('profile')
   getProfile(@Request() req) {
     return this.userService.findOne(req.user.userId);
+  }
+
+  @Public()
+  @Get('users')
+  getUsers(@Query('find-by') value: string, @Query('sort') sort: 'old' | 'new' = 'new') {
+    return this.userService.findAll(value, sort);
   }
 
   @Post('update')

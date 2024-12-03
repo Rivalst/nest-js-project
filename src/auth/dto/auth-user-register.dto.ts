@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsPhoneNumber, IsString, MinLength } from 'class-validator';
 import { Gender } from '../../common/constant/enums.enum';
 
 export class AuthUserRegisterDto {
@@ -15,6 +15,10 @@ export class AuthUserRegisterDto {
   @IsEmail()
   @IsNotEmpty({ message: 'email is required' })
   email: string;
+
+  @IsPhoneNumber('UA')
+  @IsOptional()
+  phone: string;
 
   @IsNotEmpty()
   @IsEnum(Gender, {

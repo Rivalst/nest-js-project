@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { Public } from '../common/constant';
 import { AuthUserRegisteredDto } from './dto/auth-user-registered.dto';
 import { AuthUserRegisterDto } from './dto/auth-user-register.dto';
-import { AuthUserSignInDto } from './dto/auth-user-signin.dto';
+import { AuthEmailUserSignInDto } from './dto/auth-email-user-sign-in.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -11,8 +11,8 @@ export class AuthController {
 
   @Public()
   @HttpCode(HttpStatus.OK)
-  @Post('login')
-  signIn(@Body() signInDto: AuthUserSignInDto) {
+  @Post('login-email')
+  signIn(@Body() signInDto: AuthEmailUserSignInDto) {
     return this.authService.signIn(signInDto);
   }
 
@@ -25,7 +25,7 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('admin-login')
-  signInAdmin(@Body() signInDto: AuthUserSignInDto) {
+  signInAdmin(@Body() signInDto: AuthEmailUserSignInDto) {
     return this.authService.signInAdmin(signInDto);
   }
 

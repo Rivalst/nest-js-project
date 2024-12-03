@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
-export class AuthUserSignInDto {
+export class AuthEmailUserSignInDto {
   @IsString({ message: 'password must be a string' })
   @IsNotEmpty({ message: 'password is required' })
   password: string;

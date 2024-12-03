@@ -6,8 +6,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../common/constant';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
-import { UserRepository } from '../user/user.repository';
-import { UserAdminRepository } from '../user/user-admin.repository';
+import { UserRepository } from '../user/repository/user.repository';
+import { UserAdminRepository } from '../user/repository/user-admin.repository';
 
 @Module({
   imports: [

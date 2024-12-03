@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsOptional, IsPhoneNumber, IsString, MinLength } from 'class-validator';
 import { Gender } from '../../common/constant/enums.enum';
 
 export class UserUpdateDto {
@@ -15,6 +15,10 @@ export class UserUpdateDto {
   @IsEmail()
   @IsOptional()
   email: string;
+
+  @IsPhoneNumber('UA')
+  @IsOptional()
+  phone: string;
 
   @IsEnum(Gender, {
     message: 'gender must be either male or female',

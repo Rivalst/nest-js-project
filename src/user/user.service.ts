@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { AppLogger } from '../logger/logger.service';
 import { User } from './user.entity';
-import { UserRepository } from './user.repository';
+import { UserRepository } from './repository/user.repository';
 import { UserUpdateDto } from './dto/user-update.dto';
 
 @Injectable()
@@ -22,6 +22,10 @@ export class UserService {
     const userWithoutPassword = user.get({ plain: true });
     delete userWithoutPassword.password;
     return userWithoutPassword;
+  }
+
+  async findAll(value: string, sort: 'old' | 'new'): Promise<User[]> {
+    return await this.userRepository.findAll(value, sort);
   }
 
   async update(id: number, user: UserUpdateDto) {

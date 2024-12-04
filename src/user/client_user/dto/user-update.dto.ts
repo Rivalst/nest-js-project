@@ -1,5 +1,5 @@
 import { IsEmail, IsEnum, IsOptional, IsPhoneNumber, IsString, MinLength } from 'class-validator';
-import { Gender } from '../../common/constant/enums.enum';
+import { Gender } from '../../../common/constant/enums.enum';
 
 export class UserUpdateDto {
   @MinLength(3)
@@ -16,7 +16,7 @@ export class UserUpdateDto {
   @IsOptional()
   email: string;
 
-  @IsPhoneNumber('UA')
+  @IsPhoneNumber()
   @IsOptional()
   phone: string;
 

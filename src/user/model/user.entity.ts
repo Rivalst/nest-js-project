@@ -1,12 +1,12 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
-import { Gender } from '../common/constant/enums.enum';
+import { Gender } from '../../common/constant/enums.enum';
 
-@Table
+@Table({ tableName: 'users', timestamps: true, paranoid: true })
 export class User extends Model<User> {
   @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
   id: number;
 
-  @Column({ type: DataType.STRING, allowNull: false })
+  @Column({ type: DataType.STRING, unique: true, allowNull: false })
   username: string;
 
   @Column({ type: DataType.STRING, unique: true, allowNull: false })

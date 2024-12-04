@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { AuthController } from './client_auth/auth.controller';
+import { AuthService } from './client_auth/auth.service';
 import { UserModule } from '../user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../common/constant';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './auth.guard';
-import { UserRepository } from '../user/repository/user.repository';
-import { UserAdminRepository } from '../user/repository/user-admin.repository';
+import { AdminAuthService } from './admin_auth/admin-auth.service';
+import { AdminAuthController } from './admin_auth/admin-auth.controller';
 
 @Module({
   imports: [
@@ -18,16 +16,7 @@ import { UserAdminRepository } from '../user/repository/user-admin.repository';
       signOptions: { expiresIn: process.env.TOKEN_EXPIRATION },
     }),
   ],
-  providers: [
-    AuthService,
-    UserRepository,
-    UserAdminRepository,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
-  controllers: [AuthController],
-  exports: [AuthService],
+  providers: [AuthService, AdminAuthService],
+  controllers: [AuthController, AdminAuthController],
 })
 export class AuthModule {}

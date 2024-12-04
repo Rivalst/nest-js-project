@@ -1,29 +1,32 @@
-import { Body, Controller, Delete, Get, Post, Query, Request } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Query, Request, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserUpdateDto } from './dto/user-update.dto';
-import { Public } from '../common/constant';
+import { Public } from '../../common/constant';
+import { AuthGuard } from '../../auth/auth.guard';
+import { UserFindByDto } from './dto/user-find-by.dto';
 
-@Controller('user')
+@Controller('users')
+@UseGuards(AuthGuard)
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get('profile')
-  getProfile(@Request() req) {
+  @Get('me')
+  findOne(@Request() req) {
     return this.userService.findOne(req.user.userId);
   }
 
   @Public()
-  @Get('users')
-  getUsers(@Query('find-by') value: string, @Query('sort') sort: 'old' | 'new' = 'new') {
-    return this.userService.findAll(value, sort);
+  @Get()
+  findAll(@Query() findByDto: UserFindByDto) {
+    return this.userService.findAll(findByDto);
   }
 
-  @Post('update')
+  @Patch()
   update(@Request() req, @Body() body: UserUpdateDto) {
     return this.userService.update(req.user.userId, body);
   }
 
-  @Delete('delete')
+  @Delete()
   remove(@Request() req) {
     return this.userService.remove(req.user.userId);
   }

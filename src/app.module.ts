@@ -1,6 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ProductsModule } from './products/products.module';
-import { DatabaseModule } from './database/database.module';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionsFilter } from './common/exception/global-exception.exception';
 import { LoggerRequestBodyMiddleware, LoggerRequestMethodMiddleware } from './common/middleware/middleware.middleware';
@@ -8,9 +7,18 @@ import { LoggerModule } from './logger/logger.module';
 import { ExcludeNullInterceptor } from './common/iterceptor/null-iterceptor.interceptor';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { UserModule } from './user/user.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), ProductsModule, DatabaseModule, LoggerModule, AuthModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    DatabaseModule,
+    ProductsModule,
+    LoggerModule,
+    UserModule,
+    AuthModule,
+  ],
   providers: [
     ExcludeNullInterceptor,
     {

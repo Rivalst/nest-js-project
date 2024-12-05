@@ -7,10 +7,10 @@ export class UserUpdateDto {
   @IsOptional()
   username: string;
 
-  @MinLength(8)
-  @IsString({ message: 'password must be a string' })
-  @IsOptional()
-  password: string;
+  // @MinLength(8)
+  // @IsString({ message: 'password must be a string' })
+  // @IsOptional()
+  // password: string;
 
   @IsEmail()
   @IsOptional()

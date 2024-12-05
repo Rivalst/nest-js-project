@@ -1,5 +1,5 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
-import { Gender } from '../../common/constant/enums.enum';
+import { Gender } from './gender.enum';
 
 @Table({ tableName: 'users', timestamps: true, paranoid: true })
 export class User extends Model<User> {

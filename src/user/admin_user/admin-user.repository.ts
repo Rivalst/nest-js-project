@@ -22,6 +22,8 @@ export class AdminUserRepository {
   }
 
   async findAll(findByDto: UserFindByDto): Promise<User[]> {
+    const sort = findByDto.sort === 'new' ? 'DESC' : 'ASC';
+
     const findBy = findByDto.find ?? '';
     findBy.trim();
     return await this.userModel.findAll({
@@ -32,6 +34,7 @@ export class AdminUserRepository {
           { phone: { [Op.iLike]: `%${findBy}%` } },
         ],
       },
+      order: [['createdAt', sort]],
       attributes: this.attribute,
     });
   }

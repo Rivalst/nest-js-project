@@ -17,6 +17,13 @@ export class AdminAuthService {
       throw new BadRequestException('Username or password is invalid');
     }
 
+    const roles = user.roles;
+    const isAdmin = roles.some(role => role.name === 'ADMIN');
+
+    if (!isAdmin) {
+      throw new UnauthorizedException('Username or password is invalid');
+    }
+
     const isPasswordValid = await bcrypt.compare(userDto.password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Username or password is invalid');

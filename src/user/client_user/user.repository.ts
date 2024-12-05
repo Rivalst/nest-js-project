@@ -4,6 +4,7 @@ import { UserDto } from './dto/user.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { UserFindByDto } from './dto/user-find-by.dto';
+import { Role } from '../model/role.entity';
 
 export class UserRepository {
   constructor(@InjectModel(User) private readonly userModel: typeof User) {}
@@ -35,6 +36,13 @@ export class UserRepository {
           { phone: { [Op.iLike]: `%${findBy}%` } },
         ],
       },
+      include: [
+        {
+          model: Role,
+          where: { name: { [Op.ne]: 'ADMIN' } },
+          through: { attributes: [] },
+        },
+      ],
       order: [['createdAt', sort]],
       attributes: this.attribute,
     });

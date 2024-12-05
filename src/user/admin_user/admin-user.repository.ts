@@ -3,6 +3,7 @@ import { User } from '../model/user.entity';
 import { Op } from 'sequelize';
 import { UserFindByDto } from '../client_user/dto/user-find-by.dto';
 import { UserUpdateDto } from '../client_user/dto/user-update.dto';
+import { Role } from '../model/role.entity';
 
 export class AdminUserRepository {
   constructor(@InjectModel(User) private readonly userModel: typeof User) {}
@@ -14,6 +15,12 @@ export class AdminUserRepository {
     return await this.userModel.findOne({
       where: { [Op.or]: [{ email: login }, { phone: login }] },
       attributes: this.attributeFindOneByLogin,
+      include: [
+        {
+          model: Role,
+          through: { attributes: [] },
+        },
+      ],
     });
   }
 

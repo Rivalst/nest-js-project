@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { User } from '../user/model/user.entity';
+import { UserRole } from '../user/model/user-role.entity';
+import { Role } from '../user/model/role.entity';
 
 @Module({
   imports: [
@@ -13,6 +16,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
       define: {
         underscored: true,
       },
+      models: [User, UserRole, Role],
       synchronize: true,
       autoLoadModels: true,
     }),

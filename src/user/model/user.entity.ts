@@ -1,5 +1,8 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, BelongsToMany, AfterCreate } from 'sequelize-typescript';
 import { Gender } from './gender.enum';
+import { Role } from './role.entity';
+import { UserRole } from './user-role.entity';
+import { RolesEnum } from './roles.enum';
 
 @Table({ tableName: 'users', timestamps: true, paranoid: true })
 export class User extends Model<User> {
@@ -20,4 +23,18 @@ export class User extends Model<User> {
 
   @Column({ type: DataType.ENUM, values: Object.values(Gender), allowNull: false })
   gender: Gender;
+
+  @BelongsToMany(() => Role, () => UserRole)
+  roles: Role[];
+
+  @AfterCreate
+  static async assignDefaultUserRole(user: User) {
+    const role = await Role.findOne({ where: { name: RolesEnum.USER } });
+    if (role) {
+      await UserRole.create({
+        userId: user.id,
+        roleId: role.id,
+      });
+    }
+  }
 }

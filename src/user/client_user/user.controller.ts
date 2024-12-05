@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, Patch, Query, Request, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserUpdateDto } from './dto/user-update.dto';
-import { Public } from '../../common/constant';
 import { AuthGuard } from '../../auth/auth.guard';
 import { UserFindByDto } from './dto/user-find-by.dto';
+import { Public } from '../../common/decorators/public.decorator';
 
 @Controller('users')
 @UseGuards(AuthGuard)

@@ -9,7 +9,6 @@ export class LoggerController {
   @Render('logviewer')
   async getLogs(@Query('limit') limit?: string) {
     const logs = await this.loggerService.findAll(limit);
-    console.log('loogs', logs);
     return { logs };
   }
 }

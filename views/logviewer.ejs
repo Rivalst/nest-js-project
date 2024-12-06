@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .log-entry {
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        .log-json {
+            display: none;
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .info {
+            border-left: 5px solid #007bff;
+        }
+        .error {
+            border-left: 5px solid #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Log Viewer</h1>
+    <div>
+        <% if (Array.isArray(logs)) { %>
+            <% logs.forEach(log => { %>
+                <% let logType = (log.status < 400) ? 'info' : 'error'; %>
+                <div class="log-entry <%= logType %>">
+                    <button onclick="toggleLog('<%= log.id %>')">
+                        <%= logType.charAt(0).toUpperCase() + logType.slice(1) %> Log: <%= log.timestamp %> - <%= log.method %> <%= log.url %>
+                    </button>
+                    <div id="log-<%= log.id %>" class="log-json">
+                        <pre><%= JSON.stringify(log, null, 2) %></pre>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>No logs available</p>
+        <% } %>
+    </div>
+</div>
+
+<script>
+    function toggleLog(id) {
+        const logJsonDiv = document.getElementById(`log-${id}`);
+        if (logJsonDiv.style.display === 'none' || logJsonDiv.style.display === '') {
+            logJsonDiv.style.display = 'block';
+        } else {
+            logJsonDiv.style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>

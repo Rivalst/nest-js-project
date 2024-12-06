@@ -3,6 +3,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '../user/model/user.entity';
 import { UserRole } from '../user/model/user-role.entity';
 import { Role } from '../user/model/role.entity';
+import { Log } from '../logger/logger.entity';
 
 @Module({
   imports: [
@@ -16,10 +17,12 @@ import { Role } from '../user/model/role.entity';
       define: {
         underscored: true,
       },
-      models: [User, UserRole, Role],
+      models: [User, UserRole, Role, Log],
       synchronize: true,
       autoLoadModels: true,
     }),
+    SequelizeModule.forFeature([Log]),
   ],
+  exports: [SequelizeModule],
 })
 export class DatabaseModule {}

@@ -21,7 +21,7 @@ import { Log } from '../logger/logger.entity';
       synchronize: true,
       autoLoadModels: true,
     }),
-    SequelizeModule.forFeature([Log]), // Регистрируем модель глобально
+    SequelizeModule.forFeature([Log]),
   ],
   exports: [SequelizeModule],
 })

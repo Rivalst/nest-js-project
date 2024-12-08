@@ -37,4 +37,6 @@ export class User extends Model<User> {
       });
     }
   }
+
+  // add after delete
 }

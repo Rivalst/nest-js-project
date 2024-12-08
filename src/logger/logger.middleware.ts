@@ -2,10 +2,22 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Log } from './logger.entity';
 import { NextFunction, Request, Response } from 'express';
+import { LoggerService } from './logger.service';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
-  constructor(@InjectModel(Log) private readonly logModel: typeof Log) {}
+  constructor(
+    @InjectModel(Log) private readonly logModel: typeof Log,
+    private readonly logger: LoggerService,
+  ) {}
+
+  private logBasedOnStatus(status: number, message: string, data: Record<string, any>) {
+    if (status >= 400) {
+      this.logger.error(message, data);
+    } else {
+      this.logger.info(message, data);
+    }
+  }
 
   private sanitizeBody(body: any): any {
     if (body && typeof body === 'object') {
@@ -54,9 +66,7 @@ export class LoggerMiddleware implements NestMiddleware {
         response: responseBody,
       };
 
-      this.logModel.create(fullLogEntry).catch(error => {
-        console.error('Error saving log:', error);
-      });
+      this.logBasedOnStatus(res.statusCode, 'http request', fullLogEntry);
 
       return originalSend(chunk);
     };

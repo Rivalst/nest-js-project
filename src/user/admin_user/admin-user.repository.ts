@@ -48,11 +48,13 @@ export class AdminUserRepository {
     });
   }
 
-  async update(id: number, dto: UserUpdateDto): Promise<User> {
+  async update(id: number, dto: UserUpdateDto) {
     await this.userModel.update(dto, {
       where: { id: id },
+      returning: true,
     });
-    return this.findOne(id);
+    // how to correct send signal that user was updated ?
+    return { status: 'success' };
   }
 
   async remove(id: number) {

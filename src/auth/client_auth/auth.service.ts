@@ -45,19 +45,13 @@ export class AuthService {
     dto.password = await bcrypt.hash(dto.password, saltRounds);
 
     const createdUser = await this.userRepository.create(dto);
-
-    const accessToken = await this.generateTokens(
-      createdUser,
-      process.env.JWT_ACCESS_SECRET,
-      process.env.JWT_ACCESS_TIME,
-    );
-    const refreshToken = await this.generateTokens(
-      createdUser,
-      process.env.JWT_REFRESH_SECRET,
-      process.env.JWT_REFRESH_TIME,
-    );
-
     const user = await this.userRepository.findOne(createdUser.id);
+    if (!user) {
+      throw new BadRequestException('User not created');
+    }
+
+    const accessToken = await this.generateTokens(user, process.env.JWT_ACCESS_SECRET, process.env.JWT_ACCESS_TIME);
+    const refreshToken = await this.generateTokens(user, process.env.JWT_REFRESH_SECRET, process.env.JWT_REFRESH_TIME);
 
     return {
       user,

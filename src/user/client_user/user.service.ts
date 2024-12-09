@@ -28,14 +28,15 @@ export class UserService {
 
   async update(id: number, user: UserUpdateDto) {
     if (Object.keys(user).length === 0) {
-      return this.findOne(id);
+      return this.userRepository.findOne(id);
     }
 
     const updatedUser = await this.userRepository.update(id, user);
-    if (!updatedUser) {
+    if (updatedUser.status !== 'success') {
       throw new NotFoundException('User not found');
     }
-    return updatedUser;
+
+    return this.userRepository.findOne(id);
   }
 
   async remove(id: number) {

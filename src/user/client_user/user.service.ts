@@ -22,8 +22,8 @@ export class UserService {
     return user;
   }
 
-  async findAll(findByDto: UserFindByDto): Promise<User[]> {
-    return await this.userRepository.findAll(findByDto);
+  async findAll(dto: UserFindByDto): Promise<User[]> {
+    return await this.userRepository.findAll(dto);
   }
 
   async update(id: number, user: UserUpdateDto) {

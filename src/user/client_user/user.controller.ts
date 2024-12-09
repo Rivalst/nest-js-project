@@ -17,13 +17,13 @@ export class UserController {
 
   @Public()
   @Get()
-  findAll(@Query() findByDto: UserFindByDto) {
-    return this.userService.findAll(findByDto);
+  findAll(@Query() dto: UserFindByDto) {
+    return this.userService.findAll(dto);
   }
 
   @Patch()
-  update(@Request() req, @Body() body: UserUpdateDto) {
-    return this.userService.update(req.user.userId, body);
+  update(@Request() req, @Body() dto: UserUpdateDto) {
+    return this.userService.update(req.user.userId, dto);
   }
 
   @Delete()

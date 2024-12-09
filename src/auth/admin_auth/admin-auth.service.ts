@@ -11,8 +11,8 @@ export class AdminAuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(userDto: AuthEmailUserSignInDto) {
-    const user = await this.adminUserRepository.findOneByLogin(userDto.email);
+  async signIn(dto: AuthEmailUserSignInDto) {
+    const user = await this.adminUserRepository.findOneByLogin(dto.email);
     if (!user) {
       throw new BadRequestException('Username or password is invalid');
     }
@@ -24,7 +24,7 @@ export class AdminAuthService {
       throw new UnauthorizedException('Username or password is invalid');
     }
 
-    const isPasswordValid = await bcrypt.compare(userDto.password, user.password);
+    const isPasswordValid = await bcrypt.compare(dto.password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Username or password is invalid');
     }

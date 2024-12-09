@@ -8,7 +8,7 @@ export class AdminAuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('sign-in')
-  signIn(@Body() signInDto: AuthEmailUserSignInDto) {
-    return this.adminAuthService.signIn(signInDto);
+  signIn(@Body() dto: AuthEmailUserSignInDto) {
+    return this.adminAuthService.signIn(dto);
   }
 }

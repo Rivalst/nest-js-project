@@ -12,13 +12,13 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(userDto: AuthEmailUserSignInDto) {
-    const user = await this.userRepository.findOneByLogin(userDto.email);
+  async signIn(dto: AuthEmailUserSignInDto) {
+    const user = await this.userRepository.findOneByLogin(dto.email);
     if (!user) {
       throw new BadRequestException('Username or password is invalid');
     }
 
-    const isPasswordValid = await bcrypt.compare(userDto.password, user.password);
+    const isPasswordValid = await bcrypt.compare(dto.password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Username or password is invalid');
     }
@@ -35,16 +35,16 @@ export class AuthService {
     };
   }
 
-  async signUp(userRegisterDto: AuthUserRegisterDto) {
-    const existingUser = await this.userRepository.findOneByLogin(userRegisterDto.email);
+  async signUp(dto: AuthUserRegisterDto) {
+    const existingUser = await this.userRepository.findOneByLogin(dto.email);
     if (existingUser) {
       throw new ConflictException('User with this username already exists');
     }
 
     const saltRounds = parseInt(process.env.SALT_ROUNDS_BASE, 10);
-    userRegisterDto.password = await bcrypt.hash(userRegisterDto.password, saltRounds);
+    dto.password = await bcrypt.hash(dto.password, saltRounds);
 
-    const createdUser = await this.userRepository.create(userRegisterDto);
+    const createdUser = await this.userRepository.create(dto);
 
     const accessToken = await this.generateTokens(
       createdUser,

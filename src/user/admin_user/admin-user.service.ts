@@ -14,8 +14,8 @@ export class AdminUserService {
     this.logger.setContext('UserService');
   }
 
-  async findAll(findByDto: UserFindByDto): Promise<User[]> {
-    return await this.adminUserRepository.findAll(findByDto);
+  async findAll(dto: UserFindByDto): Promise<User[]> {
+    return await this.adminUserRepository.findAll(dto);
   }
 
   async findOne(id: number): Promise<User> {

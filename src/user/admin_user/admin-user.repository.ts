@@ -13,7 +13,7 @@ export class AdminUserRepository {
 
   async findOneByLogin(login: string): Promise<User> {
     return await this.userModel.findOne({
-      where: { [Op.or]: [{ email: login }, { phone: login }] },
+      where: { [Op.or]: [{ email: login }] },
       attributes: this.attributeFindOneByLogin,
       include: [
         {
@@ -28,26 +28,28 @@ export class AdminUserRepository {
     return await this.userModel.findOne({ where: { id }, attributes: this.attribute });
   }
 
-  async findAll(findByDto: UserFindByDto): Promise<User[]> {
-    const sort = findByDto.sort === 'new' ? 'DESC' : 'ASC';
+  async findAll(dto: UserFindByDto): Promise<User[]> {
+    const sort = dto.sort === 'new' ? 'DESC' : 'ASC';
 
-    const findBy = findByDto.find ?? '';
-    findBy.trim();
+    const findBy = dto.find?.trim();
+    const where = findBy
+      ? {
+          [Op.or]: [
+            { username: { [Op.iLike]: `%${findBy}%` } },
+            { email: { [Op.iLike]: `%${findBy}%` } },
+            { phone: { [Op.iLike]: `%${findBy}%` } },
+          ],
+        }
+      : undefined;
     return await this.userModel.findAll({
-      where: {
-        [Op.or]: [
-          { username: { [Op.iLike]: `%${findBy}%` } },
-          { email: { [Op.iLike]: `%${findBy}%` } },
-          { phone: { [Op.iLike]: `%${findBy}%` } },
-        ],
-      },
+      where: where,
       order: [['createdAt', sort]],
       attributes: this.attribute,
     });
   }
 
-  async update(id: number, newUser: UserUpdateDto): Promise<User> {
-    await this.userModel.update(newUser, {
+  async update(id: number, dto: UserUpdateDto): Promise<User> {
+    await this.userModel.update(dto, {
       where: { id: id },
     });
     return this.findOne(id);

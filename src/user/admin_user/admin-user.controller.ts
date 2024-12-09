@@ -14,8 +14,8 @@ export class AdminUserController {
   constructor(private adminUserService: AdminUserService) {}
 
   @Get()
-  findAll(@Query() findByDto: UserFindByDto) {
-    return this.adminUserService.findAll(findByDto);
+  findAll(@Query() dto: UserFindByDto) {
+    return this.adminUserService.findAll(dto);
   }
 
   @Get(':id')
@@ -24,8 +24,8 @@ export class AdminUserController {
   }
 
   @Patch(':id')
-  update(@Body() userUpdateDto: UserUpdateDto, @Param('id') id: number) {
-    return this.adminUserService.update(id, userUpdateDto);
+  update(@Body() dto: UserUpdateDto, @Param('id') id: number) {
+    return this.adminUserService.update(id, dto);
   }
 
   @Delete(':id')

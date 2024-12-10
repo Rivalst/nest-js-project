@@ -10,7 +10,7 @@ import { LokiLoggerModule } from 'nestjs-loki-logger';
   imports: [
     SequelizeModule.forFeature([Log]),
     LokiLoggerModule.forRoot({
-      lokiUrl: 'http://127.0.0.1:3100',
+      lokiUrl: 'http://127.0.0.1:3131',
       labels: {
         app: 'nestjs',
       },

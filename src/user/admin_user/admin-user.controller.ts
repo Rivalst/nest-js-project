@@ -6,8 +6,11 @@ import { AdminUserService } from './admin-user.service';
 import { RolesGuard } from '../roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { RolesEnum } from '../model/roles.enum';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('admin/users')
+@ApiTags('Admin Users')
+@ApiBearerAuth()
 @Roles(RolesEnum.ADMIN)
 @UseGuards(AuthGuard, RolesGuard)
 export class AdminUserController {

@@ -16,6 +16,7 @@ async function bootstrap() {
     .setTitle('NestJS project')
     .setDescription('The API description')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const options: SwaggerDocumentOptions = {

@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, BelongsToMany, AfterCreate, AfterDestroy } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, BelongsToMany, AfterCreate, BeforeDestroy } from 'sequelize-typescript';
 import { Gender } from '../enum/gender.enum';
 import { Role } from '../../roles/role.entity';
 import { UserRole } from './user-role.entity';
@@ -38,7 +38,7 @@ export class User extends Model<User> {
     }
   }
 
-  @AfterDestroy
+  @BeforeDestroy
   static async updateUniqueFieldsBeforeDelete(user: User) {
     const currentDate = new Date().toISOString();
 
@@ -47,8 +47,6 @@ export class User extends Model<User> {
     if (user.phone) {
       user.phone = `${user.phone}_deleted_${currentDate}`;
     }
-
-    // Сохраняем обновленные значения в базе данных
     await user.save({ hooks: false }); // Отключаем хуки, чтобы избежать циклических вызовов
   }
 }

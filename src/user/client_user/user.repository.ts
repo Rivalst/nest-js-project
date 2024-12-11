@@ -68,7 +68,7 @@ export class UserRepository {
   }
 
   async remove(id: number) {
-    return await this.userModel.destroy({ where: { id } });
+    return await this.userModel.destroy({ where: { id }, individualHooks: true });
   }
 
   async userExist(id: number): Promise<boolean> {

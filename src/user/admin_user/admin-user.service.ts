@@ -27,6 +27,11 @@ export class AdminUserService {
   }
 
   async update(id: number, user: UserUpdateDto) {
+    const userExist = await this.adminUserRepository.userExist(id);
+    if (!userExist) {
+      throw new NotFoundException('User not found');
+    }
+
     if (Object.keys(user).length === 0) {
       return this.adminUserRepository.findOne(id);
     }
@@ -40,6 +45,11 @@ export class AdminUserService {
   }
 
   async remove(id: number) {
+    const userExist = await this.adminUserRepository.userExist(id);
+    if (!userExist) {
+      throw new NotFoundException('User not found');
+    }
+
     await this.adminUserRepository.remove(id);
   }
 }

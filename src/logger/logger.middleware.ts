@@ -1,15 +1,10 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { Log } from './logger.entity';
 import { NextFunction, Request, Response } from 'express';
 import { LoggerService } from './logger.service';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
-  constructor(
-    @InjectModel(Log) private readonly logModel: typeof Log,
-    private readonly logger: LoggerService,
-  ) {}
+  constructor(private readonly logger: LoggerService) {}
 
   private logBasedOnStatus(status: number, message: string, data: Record<string, any>) {
     if (status >= 400) {

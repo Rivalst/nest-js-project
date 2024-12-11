@@ -12,6 +12,7 @@ export class UserRepository {
 
   private attribute = ['id', 'username', 'email', 'phone', 'gender'];
   private attributeFindOneByLogin = ['id', 'username', 'email', 'password', 'phone', 'gender'];
+  private attributeUserExist = ['id'];
 
   async findOneByLogin(login: string): Promise<User> {
     return await this.userModel.findOne({
@@ -68,5 +69,10 @@ export class UserRepository {
 
   async remove(id: number) {
     return await this.userModel.destroy({ where: { id } });
+  }
+
+  async userExist(id: number): Promise<boolean> {
+    const user = await this.userModel.findOne({ where: { id }, attributes: this.attributeUserExist });
+    return !!user;
   }
 }

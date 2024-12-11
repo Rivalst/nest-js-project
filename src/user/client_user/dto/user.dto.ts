@@ -1,5 +1,5 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsPhoneNumber, IsString, MinLength } from 'class-validator';
-import { Gender } from '../../model/gender.enum';
+import { Gender } from '../../enum/gender.enum';
 
 export class UserDto {
   @MinLength(3)

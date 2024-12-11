@@ -4,8 +4,8 @@ import { UserDto } from './dto/user.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { UserFindByDto } from './dto/user-find-by.dto';
-import { Role } from '../model/role.entity';
-import { RolesEnum } from '../model/roles.enum';
+import { Role } from '../../roles/role.entity';
+import { RolesEnum } from '../../roles/roles.enum';
 
 export class UserRepository {
   constructor(@InjectModel(User) private readonly userModel: typeof User) {}

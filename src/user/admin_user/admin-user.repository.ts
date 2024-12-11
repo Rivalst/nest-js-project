@@ -3,7 +3,7 @@ import { User } from '../model/user.entity';
 import { Op } from 'sequelize';
 import { UserFindByDto } from '../client_user/dto/user-find-by.dto';
 import { UserUpdateDto } from '../client_user/dto/user-update.dto';
-import { Role } from '../model/role.entity';
+import { Role } from '../../roles/role.entity';
 
 export class AdminUserRepository {
   constructor(@InjectModel(User) private readonly userModel: typeof User) {}

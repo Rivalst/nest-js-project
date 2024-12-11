@@ -1,8 +1,8 @@
 import { Table, Column, Model, DataType, BelongsToMany, AfterCreate, AfterDestroy } from 'sequelize-typescript';
 import { Gender } from '../enum/gender.enum';
-import { Role } from './role.entity';
+import { Role } from '../../roles/role.entity';
 import { UserRole } from './user-role.entity';
-import { RolesEnum } from './roles.enum';
+import { RolesEnum } from '../../roles/roles.enum';
 
 @Table({ tableName: 'users', timestamps: true, paranoid: true })
 export class User extends Model<User> {

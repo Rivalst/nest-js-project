@@ -2,7 +2,7 @@ import { Reflector } from '@nestjs/core';
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './model/user.entity';
-import { Role } from './model/role.entity';
+import { Role } from '../roles/role.entity';
 import { ROLES_KEY } from '../common/decorators/roles.decorator';
 
 @Injectable()

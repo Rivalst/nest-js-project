@@ -5,7 +5,7 @@ import { UserUpdateDto } from '../client_user/dto/user-update.dto';
 import { AdminUserService } from './admin-user.service';
 import { RolesGuard } from '../roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
-import { RolesEnum } from '../model/roles.enum';
+import { RolesEnum } from '../../roles/roles.enum';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('admin/users')

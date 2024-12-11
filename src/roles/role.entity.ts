@@ -1,6 +1,6 @@
 import { BelongsToMany, Column, DataType, Model, Table } from 'sequelize-typescript';
-import { User } from './user.entity';
-import { UserRole } from './user-role.entity';
+import { User } from '../user/model/user.entity';
+import { UserRole } from '../user/model/user-role.entity';
 
 @Table({ tableName: 'roles', timestamps: true, paranoid: true })
 export class Role extends Model<Role> {

@@ -10,18 +10,9 @@ import { UserModule } from './user/user.module';
 import { DatabaseModule } from './database/database.module';
 import { LoggerMiddleware } from './logger/logger.middleware';
 import { BlogModule } from './blog/blog.module';
-import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    DatabaseModule,
-    LoggerModule,
-    UserModule,
-    AuthModule,
-    BlogModule,
-    PrometheusModule.register(),
-  ],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), DatabaseModule, LoggerModule, UserModule, AuthModule, BlogModule],
   providers: [
     ExcludeNullInterceptor,
     {

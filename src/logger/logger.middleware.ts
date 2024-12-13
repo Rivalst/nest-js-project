@@ -1,10 +1,16 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { LoggerService } from './logger.service';
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
+import { Histogram } from 'prom-client';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
-  constructor(private readonly logger: LoggerService) {}
+  constructor(
+    private readonly logger: LoggerService,
+    @InjectMetric('http_request_duration_seconds')
+    private histogram: Histogram<string>,
+  ) {}
 
   private logBasedOnStatus(status: number, message: string, data: Record<string, any>) {
     if (status >= 400) {
@@ -31,6 +37,7 @@ export class LoggerMiddleware implements NestMiddleware {
   }
 
   use(req: Request, res: Response, next: NextFunction) {
+    const end = this.histogram.startTimer();
     if (req.originalUrl.startsWith('/api/logviewer')) {
       return next();
     }
@@ -62,7 +69,7 @@ export class LoggerMiddleware implements NestMiddleware {
       };
 
       this.logBasedOnStatus(res.statusCode, 'http request', fullLogEntry);
-
+      end({ method: req.method, path: req.path, status: res.statusCode });
       return originalSend(chunk);
     };
 

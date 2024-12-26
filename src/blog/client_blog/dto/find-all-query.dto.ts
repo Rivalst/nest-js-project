@@ -18,11 +18,11 @@ export class FindAllQueryDto {
   @IsNumber()
   @Transform(({ value }) => Number(value))
   @IsOptional()
-  @ApiPropertyOptional({ type: Number, default: 10 })
+  @ApiPropertyOptional({ type: Number })
   categoryId?: number;
 
   @IsString()
   @IsOptional()
-  @ApiPropertyOptional({ type: Number, default: 10 })
+  @ApiPropertyOptional({ type: Number })
   search?: string;
 }

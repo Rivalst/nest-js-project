@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 
@@ -6,23 +6,23 @@ export class FindAllQueryDto {
   @IsNumber()
   @Transform(({ value }) => Number(value))
   @IsOptional()
-  @ApiProperty({ type: Number, default: 10 })
+  @ApiPropertyOptional({ type: Number, default: 10 })
   limit?: number;
 
   @IsNumber()
   @Transform(({ value }) => Number(value))
   @IsOptional()
-  @ApiProperty({ type: Number, default: 0 })
+  @ApiPropertyOptional({ type: Number, default: 10 })
   offset?: number;
 
   @IsNumber()
   @Transform(({ value }) => Number(value))
   @IsOptional()
-  @ApiProperty({ type: Number, default: undefined })
+  @ApiPropertyOptional({ type: Number, default: 10 })
   categoryId?: number;
 
   @IsString()
   @IsOptional()
-  @ApiProperty({ type: String, default: undefined })
+  @ApiPropertyOptional({ type: Number, default: 10 })
   search?: string;
 }

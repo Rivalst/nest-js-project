@@ -10,9 +10,18 @@ import { UserModule } from './user/user.module';
 import { DatabaseModule } from './database/database.module';
 import { LoggerMiddleware } from './logger/logger.middleware';
 import { BlogModule } from './blog/blog.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), DatabaseModule, LoggerModule, UserModule, AuthModule, BlogModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    DatabaseModule,
+    LoggerModule,
+    UserModule,
+    AuthModule,
+    CategoryModule,
+    BlogModule,
+  ],
   providers: [
     ExcludeNullInterceptor,
     {

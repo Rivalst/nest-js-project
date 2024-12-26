@@ -3,6 +3,9 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '../user/model/user.entity';
 import { UserRole } from '../user/model/user-role.entity';
 import { Role } from '../roles/role.entity';
+import { Blog } from '../blog/model/blog.entity';
+import { Category } from '../category/model/category.entity';
+import { CategoryBlog } from '../category/model/category-blog.entity';
 
 @Module({
   imports: [
@@ -16,7 +19,7 @@ import { Role } from '../roles/role.entity';
       define: {
         underscored: true,
       },
-      models: [User, UserRole, Role],
+      models: [User, UserRole, Role, Blog, Category, CategoryBlog],
       synchronize: true,
       autoLoadModels: true,
     }),

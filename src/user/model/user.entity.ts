@@ -1,8 +1,18 @@
-import { Table, Column, Model, DataType, BelongsToMany, AfterCreate, BeforeDestroy } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  BelongsToMany,
+  AfterCreate,
+  BeforeDestroy,
+  HasMany,
+} from 'sequelize-typescript';
 import { Gender } from '../enum/gender.enum';
 import { Role } from '../../roles/role.entity';
 import { UserRole } from './user-role.entity';
 import { RolesEnum } from '../../roles/roles.enum';
+import { Blog } from '../../blog/model/blog.entity';
 
 @Table({ tableName: 'users', timestamps: true, paranoid: true })
 export class User extends Model<User> {
@@ -27,6 +37,9 @@ export class User extends Model<User> {
   @BelongsToMany(() => Role, () => UserRole)
   roles: Role[];
 
+  @HasMany(() => Blog, { onDelete: 'CASCADE', hooks: true })
+  blogs: Blog[];
+
   @AfterCreate
   static async assignDefaultUserRole(user: User) {
     const role = await Role.findOne({ where: { name: RolesEnum.USER } });
@@ -47,6 +60,6 @@ export class User extends Model<User> {
     if (user.phone) {
       user.phone = `${user.phone}_deleted_${currentDate}`;
     }
-    await user.save({ hooks: false }); // Отключаем хуки, чтобы избежать циклических вызовов
+    await user.save({ hooks: false });
   }
 }

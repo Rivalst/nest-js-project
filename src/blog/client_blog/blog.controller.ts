@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } f
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../auth/auth.guard';
 import { BlogService } from './blog.service';
-import { FindAllQueryDto } from './dto/find-all-query.dto';
+import { FindAllBlogQueryDto } from './dto/find-all-blog-query.dto';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { CurrentUser } from '../../common/decorators/user.decorator';
 import { UpdateBlogDto } from './dto/update-blog.dto';
@@ -14,7 +14,7 @@ export class BlogController {
   constructor(private readonly blogService: BlogService) {}
 
   @Get()
-  async findAll(@Query() dto: FindAllQueryDto) {
+  async findAll(@Query() dto: FindAllBlogQueryDto) {
     return this.blogService.findAll(dto);
   }
 

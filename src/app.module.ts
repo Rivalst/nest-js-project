@@ -11,6 +11,7 @@ import { DatabaseModule } from './database/database.module';
 import { LoggerMiddleware } from './logger/logger.middleware';
 import { BlogModule } from './blog/blog.module';
 import { CategoryModule } from './category/category.module';
+import { DmsModule } from './dms/dms.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { CategoryModule } from './category/category.module';
     AuthModule,
     CategoryModule,
     BlogModule,
+    DmsModule,
   ],
   providers: [
     ExcludeNullInterceptor,

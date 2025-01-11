@@ -2,7 +2,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 
-export class FindAllQueryDto {
+export class FindAllBlogQueryDto {
   @IsNumber()
   @Transform(({ value }) => Number(value))
   @IsOptional()

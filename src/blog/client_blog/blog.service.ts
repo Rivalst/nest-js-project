@@ -1,14 +1,18 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { BlogRepository } from './blog.repository';
-import { FindAllQueryDto } from './dto/find-all-query.dto';
+import { FindAllBlogQueryDto } from './dto/find-all-blog-query.dto';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
+import { CategoryRepository } from '../../category/client_category/category.repository';
 
 @Injectable()
 export class BlogService {
-  constructor(private readonly blogRepository: BlogRepository) {}
+  constructor(
+    private readonly blogRepository: BlogRepository,
+    private readonly categoryRepository: CategoryRepository,
+  ) {}
 
-  async findAll(dto: FindAllQueryDto) {
+  async findAll(dto: FindAllBlogQueryDto) {
     return await this.blogRepository.findAll(dto);
   }
 
@@ -24,6 +28,12 @@ export class BlogService {
     const existingBlog = await this.blogRepository.findOneByName(dto.name);
     if (existingBlog) {
       throw new ConflictException('Blog with this name already exists');
+    }
+
+    const existingCategories = await this.categoryRepository.findAll(dto);
+
+    if (existingCategories.length !== dto.categoryIds.length) {
+      throw new NotFoundException('Some categories do not exist');
     }
 
     const createdBlog = await this.blogRepository.create(dto, userId);

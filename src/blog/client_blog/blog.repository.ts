@@ -3,15 +3,17 @@ import { Blog } from '../model/blog.entity';
 import { Category } from '../../category/model/category.entity';
 import { User } from '../../user/model/user.entity';
 import { Op, Transaction } from 'sequelize';
-import { FindAllQueryDto } from './dto/find-all-query.dto';
+import { FindAllBlogQueryDto } from './dto/find-all-blog-query.dto';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { CategoryBlog } from '../../category/model/category-blog.entity';
-import { NotFoundException } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
 
 export class BlogRepository {
-  constructor(@InjectModel(Blog) private readonly blogModel: typeof Blog) {}
+  constructor(
+    @InjectModel(Blog) private readonly blogModel: typeof Blog,
+    @InjectModel(CategoryBlog) private readonly categoryBlogModel: typeof CategoryBlog,
+  ) {}
 
   private attribute = ['id', 'name', 'description', 'likes', 'authorId'];
   private attributeForCategory = ['id', 'name'];
@@ -26,7 +28,7 @@ export class BlogRepository {
     },
   ];
 
-  async findAll(dto: FindAllQueryDto): Promise<Blog[]> {
+  async findAll(dto: FindAllBlogQueryDto): Promise<Blog[]> {
     const { limit = 10, offset = 0, categoryId, search } = dto;
 
     const nameCondition = search ? { name: { [Op.iLike]: `%${search}%` } } : {};
@@ -93,26 +95,7 @@ export class BlogRepository {
         { transaction },
       );
 
-      if (dto.categoryIds?.length) {
-        // TODO: MOVE TO SERVICE
-        const existingCategories = await Category.findAll({
-          where: { id: dto.categoryIds },
-          transaction,
-        });
-
-        // TODO: MOVE TO SERVICE
-        if (existingCategories.length !== dto.categoryIds.length) {
-          throw new NotFoundException('Some categories do not exist');
-        }
-
-        const categoryBlogRelations = dto.categoryIds.map(categoryId => ({
-          blogId: blog.id,
-          categoryId,
-        }));
-
-        //TODO: CHECK IF THIS WORKS!!!
-        await CategoryBlog.bulkCreate(categoryBlogRelations, { transaction });
-      }
+      await this.createCategoriesDependency(dto.categoryIds, blog.id, transaction);
 
       await transaction.commit();
       return blog;
@@ -134,5 +117,16 @@ export class BlogRepository {
   async isBlogExist(id: number): Promise<boolean> {
     const blog = await this.blogModel.findOne({ where: { id }, attributes: this.attributeForCategoryExist });
     return !!blog;
+  }
+
+  private async createCategoriesDependency(categoryIds: number[], blogId: number, transaction: Transaction) {
+    if (categoryIds?.length) {
+      const categoryBlogRelations = categoryIds.map(categoryId => ({
+        blogId: blogId,
+        categoryId,
+      }));
+
+      await this.categoryBlogModel.bulkCreate(categoryBlogRelations, { transaction });
+    }
   }
 }

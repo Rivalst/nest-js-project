@@ -34,7 +34,7 @@ export class DmsService {
         Key: key,
         Body: file.buffer,
         ContentType: file.mimetype,
-        ACL: isPublic ? 'public-read' : 'private',
+        // ACL: isPublic ? 'public-read' : 'private',
 
         Metadata: {
           originalName: file.originalname,
@@ -45,6 +45,7 @@ export class DmsService {
 
       return {
         url: isPublic ? (await this.getFileUrl(key)).url : (await this.getPresignedSignedUrl(key)).url,
+        name: file.originalname,
         key,
         isPublic,
       };

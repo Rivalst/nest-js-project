@@ -4,12 +4,20 @@ import { FindAllBlogQueryDto } from './dto/find-all-blog-query.dto';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { CategoryRepository } from '../../category/client_category/category.repository';
+import { BlogMediaRepository } from '../../blog_media/clien_blog_media/blog-media.repository';
+import { DmsService } from '../../dms/dms.service';
+import { Sequelize } from 'sequelize-typescript';
+import { InjectConnection } from '@nestjs/sequelize';
+import { Transaction } from 'sequelize';
 
 @Injectable()
 export class BlogService {
   constructor(
     private readonly blogRepository: BlogRepository,
     private readonly categoryRepository: CategoryRepository,
+    private readonly blogMediaRepository: BlogMediaRepository,
+    private readonly dmsService: DmsService,
+    @InjectConnection() private readonly sequelize: Sequelize,
   ) {}
 
   async findAll(dto: FindAllBlogQueryDto) {
@@ -24,21 +32,26 @@ export class BlogService {
     return blog;
   }
 
-  async create(dto: CreateBlogDto, userId: number) {
-    const existingBlog = await this.blogRepository.findOneByName(dto.name);
-    if (existingBlog) {
-      throw new ConflictException('Blog with this name already exists');
-    }
+  async create(dto: CreateBlogDto, userId: number, file: Express.Multer.File) {
+    const blogId = await this.sequelize.transaction(async transaction => {
+      const existingBlog = await this.blogRepository.findOneByName(dto.name);
+      if (existingBlog) {
+        throw new ConflictException('Blog with this name already exists');
+      }
 
-    const existingCategories = await this.categoryRepository.findAll(dto);
+      const existingCategories = await this.categoryRepository.findAll(dto);
 
-    if (existingCategories.length !== dto.categoryIds.length) {
-      throw new NotFoundException('Some categories do not exist');
-    }
+      if (existingCategories.length !== dto.categoryIds.length) {
+        throw new NotFoundException('Some categories do not exist');
+      }
 
-    const createdBlog = await this.blogRepository.create(dto, userId);
+      const createdBlog = await this.blogRepository.create(dto, userId, transaction);
 
-    return await this.blogRepository.findOne(createdBlog.id);
+      await this.createMedia(createdBlog.id, file, transaction);
+
+      return createdBlog.id;
+    });
+    return await this.blogRepository.findOne(blogId);
   }
 
   async update(dto: UpdateBlogDto, userId: number) {
@@ -71,5 +84,27 @@ export class BlogService {
     }
 
     return await this.blogRepository.remove(id);
+  }
+
+  private async createMedia(blogId: number, file: Express.Multer.File, transaction: Transaction) {
+    let media: any;
+    try {
+      media = await this.dmsService.uploadSingleFile({ file: file, isPublic: true });
+
+      await this.blogMediaRepository.create(
+        {
+          blogId: blogId,
+          name: media.name,
+          key: media.key,
+          url: media.url,
+        },
+        transaction,
+      );
+    } catch (error) {
+      if (media) {
+        await this.dmsService.deleteFile(media.key);
+      }
+      throw error;
+    }
   }
 }

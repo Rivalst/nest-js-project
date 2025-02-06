@@ -1,16 +1,8 @@
-import {
-  BeforeDestroy,
-  BelongsTo,
-  BelongsToMany,
-  Column,
-  DataType,
-  ForeignKey,
-  Model,
-  Table,
-} from 'sequelize-typescript';
+import { BeforeDestroy, BelongsTo, BelongsToMany, Column, DataType, ForeignKey, HasOne, Model, Table } from 'sequelize-typescript';
 import { User } from '../../user/model/user.entity';
 import { Category } from '../../category/model/category.entity';
 import { CategoryBlog } from '../../category/model/category-blog.entity';
+import { BlogMedia } from '../../blog_media/model/blog-media.entity';
 
 @Table({ tableName: 'blogs', timestamps: true, paranoid: true })
 export class Blog extends Model<Blog> {
@@ -35,6 +27,9 @@ export class Blog extends Model<Blog> {
 
   @BelongsTo(() => User)
   author: User;
+
+  @HasOne(() => BlogMedia)
+  blogMedia: BlogMedia;
 
   @BeforeDestroy
   static async updateUniqueFieldsBeforeDelete(blog: Blog) {

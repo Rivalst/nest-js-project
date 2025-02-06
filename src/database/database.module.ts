@@ -6,6 +6,7 @@ import { Role } from '../roles/role.entity';
 import { Blog } from '../blog/model/blog.entity';
 import { Category } from '../category/model/category.entity';
 import { CategoryBlog } from '../category/model/category-blog.entity';
+import { BlogMedia } from '../blog_media/model/blog-media.entity';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { CategoryBlog } from '../category/model/category-blog.entity';
       define: {
         underscored: true,
       },
-      models: [User, UserRole, Role, Blog, Category, CategoryBlog],
+      models: [User, UserRole, Role, Blog, Category, CategoryBlog, BlogMedia],
       synchronize: true,
       autoLoadModels: true,
     }),

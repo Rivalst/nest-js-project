@@ -8,6 +8,7 @@ import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { CategoryBlog } from '../../category/model/category-blog.entity';
 import { Sequelize } from 'sequelize-typescript';
+import { BlogMedia } from '../../blog_media/model/blog-media.entity';
 
 export class BlogRepository {
   constructor(
@@ -19,13 +20,12 @@ export class BlogRepository {
   private attributeForCategory = ['id', 'name'];
   private attributeForAuthor = ['id', 'username', 'email'];
   private attributeForCategoryExist = ['id'];
+  private attributeForMedia = ['id', 'name', 'url', 'blogId'];
 
   private baseInclude = [
     { model: Category, through: { attributes: [] }, attributes: this.attributeForCategory },
-    {
-      model: User,
-      attributes: this.attributeForAuthor,
-    },
+    { model: User, attributes: this.attributeForAuthor },
+    { model: BlogMedia, attributes: this.attributeForMedia },
   ];
 
   async findAll(dto: FindAllBlogQueryDto): Promise<Blog[]> {
@@ -59,6 +59,7 @@ export class BlogRepository {
         model: User,
         attributes: this.attributeForAuthor,
       },
+      { model: BlogMedia, attributes: this.attributeForMedia },
     ];
 
     return await this.blogModel.findAll({
@@ -82,27 +83,19 @@ export class BlogRepository {
     return await this.blogModel.findOne({ where: { name }, attributes: this.attribute });
   }
 
-  async create(dto: CreateBlogDto, userId: number) {
-    const transaction: Transaction = await this.blogModel.sequelize.transaction();
+  async create(dto: CreateBlogDto, userId: number, transaction?: Transaction) {
+    const blog = await this.blogModel.create(
+      {
+        name: dto.name,
+        description: dto.description,
+        authorId: userId,
+      },
+      { transaction },
+    );
 
-    try {
-      const blog = await this.blogModel.create(
-        {
-          name: dto.name,
-          description: dto.description,
-          authorId: userId,
-        },
-        { transaction },
-      );
+    await this.createCategoriesDependency(dto.categoryIds, blog.id, transaction);
 
-      await this.createCategoriesDependency(dto.categoryIds, blog.id, transaction);
-
-      await transaction.commit();
-      return blog;
-    } catch (error) {
-      await transaction.rollback();
-      throw error;
-    }
+    return blog;
   }
 
   async update(dto: UpdateBlogDto) {

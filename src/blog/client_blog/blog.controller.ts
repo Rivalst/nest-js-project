@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, FileTypeValidator, Get, MaxFileSizeValidator, Param, ParseFilePipe, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../auth/auth.guard';
 import { BlogService } from './blog.service';
 import { FindAllBlogQueryDto } from './dto/find-all-blog-query.dto';
@@ -26,6 +26,7 @@ export class BlogController {
   }
 
   @Post()
+  @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
   async create(
     @Body() dto: CreateBlogDto,

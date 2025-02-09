@@ -4,11 +4,11 @@ import { Transform } from 'class-transformer';
 
 export class CreateBlogDto {
   @IsString()
-  @ApiProperty({ type: String, description: 'blog name' })
+  @ApiProperty({ example: 'name', description: 'Blog name', required: true })
   name: string;
 
   @IsString()
-  @ApiProperty({ type: String, description: 'blog description' })
+  @ApiProperty({ example: 'description', description: 'Blog description', required: true })
   description: string;
 
   // @IsInt()
@@ -18,6 +18,6 @@ export class CreateBlogDto {
   @IsArray()
   @IsInt({ each: true })
   @Transform(({ value }) => value.map(Number))
-  @ApiProperty({ type: [Number], description: 'category ids' })
+  @ApiProperty({ example: [1, 2], description: 'category ids', required: false, type: [Number] })
   categoryIds?: number[];
 }

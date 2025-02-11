@@ -49,8 +49,26 @@ export class BlogController {
   }
 
   @Patch()
-  async update(@Body() dto: UpdateBlogDto, @CurrentUser() user: any) {
-    return this.blogService.update(dto, user.userId);
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file'))
+  async update(
+    @Body() dto: UpdateBlogDto,
+    @CurrentUser() user: any,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+          new MaxFileSizeValidator({
+            maxSize: MAX_FILE_SIZE,
+            message: 'File is too large. Max file size is 10MB',
+          }),
+        ],
+        fileIsRequired: false,
+      }),
+    )
+    file?: Express.Multer.File,
+  ) {
+    return this.blogService.update(dto, user.userId, file);
   }
 
   @Delete('id')

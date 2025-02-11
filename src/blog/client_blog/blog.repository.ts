@@ -98,13 +98,13 @@ export class BlogRepository {
     return blog;
   }
 
-  async update(dto: UpdateBlogDto) {
-    await this.blogModel.update(dto, { where: { id: dto.id } });
+  async update(dto: UpdateBlogDto, transaction?: Transaction) {
+    await this.blogModel.update(dto, { where: { id: dto.id }, transaction });
     return { status: 'success' };
   }
 
-  async remove(id: number) {
-    return await this.blogModel.destroy({ where: { id }, individualHooks: true });
+  async remove(id: number, transaction?: Transaction) {
+    return await this.blogModel.destroy({ where: { id }, individualHooks: true, transaction });
   }
 
   async isBlogExist(id: number): Promise<boolean> {

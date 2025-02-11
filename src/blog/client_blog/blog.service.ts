@@ -9,6 +9,7 @@ import { DmsService } from '../../dms/dms.service';
 import { Sequelize } from 'sequelize-typescript';
 import { InjectConnection } from '@nestjs/sequelize';
 import { Transaction } from 'sequelize';
+import { BlogMedia } from '../../blog_media/model/blog-media.entity';
 
 @Injectable()
 export class BlogService {
@@ -54,8 +55,10 @@ export class BlogService {
     return await this.blogRepository.findOne(blogId);
   }
 
-  async update(dto: UpdateBlogDto, userId: number) {
+  async update(dto: UpdateBlogDto, userId: number, file?: Express.Multer.File) {
     const blog = await this.blogRepository.findOne(dto.id);
+    const blogMedia = await this.blogMediaRepository.findOne(blog.id);
+
     if (!blog) {
       throw new NotFoundException('Blog not found');
     }
@@ -64,11 +67,15 @@ export class BlogService {
       throw new ForbiddenException("You don't have permission to update this blog");
     }
 
-    const updatedBlog = await this.blogRepository.update(dto);
+    await this.sequelize.transaction(async transaction => {
+      await this.updateBlogMedia(blog.id, transaction, file, blogMedia);
 
-    if (updatedBlog.status !== 'success') {
-      throw new NotFoundException('Blog not updated');
-    }
+      const updatedBlog = await this.blogRepository.update(dto, transaction);
+
+      if (updatedBlog.status !== 'success') {
+        throw new NotFoundException('Blog not updated');
+      }
+    });
 
     return await this.blogRepository.findOne(dto.id);
   }
@@ -105,6 +112,16 @@ export class BlogService {
         await this.dmsService.deleteFile(media.key);
       }
       throw error;
+    }
+  }
+
+  private async updateBlogMedia(blogId: number, transaction: Transaction, file?: Express.Multer.File, blogMedia?: BlogMedia) {
+    if (file) {
+      if (blogMedia) {
+        await this.dmsService.deleteFile(blogMedia.key);
+        await this.blogRepository.remove(blogMedia.id, transaction);
+      }
+      await this.createMedia(blogId, file, transaction);
     }
   }
 }

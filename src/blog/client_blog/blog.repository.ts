@@ -68,6 +68,7 @@ export class BlogRepository {
       where: where,
       limit,
       offset,
+      // TODO: FIX AND WRItE INTRSEPTOR TO REMOVE THIS FROM RESPONSE
       // order: [['createdAt', 'DESC']],
     });
   }
